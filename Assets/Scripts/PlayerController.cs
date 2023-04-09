@@ -13,13 +13,29 @@ public class PlayerController: MonoBehaviour {
 
     Vector2 dir;
     Vector2 lookDir;
+    [SerializeField]
+    float jumpForce;
+    [SerializeField]
+    float castLength;
+    
+    bool onGround;
+
+    [SerializeField]
+    LayerMask groundLayer;
 
     void Start() {
         rb2d = GetComponent<Rigidbody2D>();
         speed = 8f;
+        jumpForce = 10f;
+        castLength = 1.1f;
+        onGround = false;
     }
 
     void Update() {
+
+        onGround = Physics2D.Raycast(transform.position, Vector2.down, castLength, groundLayer);
+        Debug.Log(onGround);
+
         if (Input.GetKeyDown(KeyCode.LeftShift))
             speed = 3f;
         if (Input.GetKeyUp(KeyCode.LeftShift))
@@ -28,7 +44,9 @@ public class PlayerController: MonoBehaviour {
         hor = Input.GetAxisRaw("Horizontal");
         vert = Input.GetAxisRaw("Vertical");
 
-        dir = new Vector2(hor, vert);
+        if (vert > 0 && onGround) {
+            rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+        }
         //if (!Interactable.status)
         //    if (dir.magnitude != 0)
         //        lookDir = dir.normalized;
@@ -42,11 +60,6 @@ public class PlayerController: MonoBehaviour {
     }
 
     void FixedUpdate() {
-        Vector2 pos = rb2d.position;
-        //if (!Interactable.status) {
-            pos.x += hor * speed * Time.deltaTime;
-            pos.y += vert * speed * Time.deltaTime;
-        //}
-        rb2d.MovePosition(pos);
+        rb2d.velocity = new Vector2(hor * speed, rb2d.velocity.y);
     }
 }
