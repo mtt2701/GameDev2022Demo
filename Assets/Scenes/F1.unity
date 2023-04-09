@@ -1348,11 +1348,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 68f7339513edd7744bedd8bf071cba79, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!61 &743452479
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1362,7 +1362,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 743452477}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 68f7339513edd7744bedd8bf071cba79, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -4163,6 +4163,12 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+=======
+  jumpForce: 5
+  castLength: 1.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 2147483648
 --- !u!1 &1657060693
 GameObject:
   m_ObjectHideFlags: 0
@@ -4293,7 +4299,7 @@ GameObject:
   - component: {fileID: 1947932970}
   - component: {fileID: 1947932969}
   - component: {fileID: 1947932972}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
