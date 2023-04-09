@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
+    protected static SceneController instance;
+
     public static SceneController Instance
     {
         get
@@ -15,19 +17,13 @@ public class SceneController : MonoBehaviour
             instance = FindObjectOfType<SceneController>();
             if (instance != null)
                 return instance;
-            Create();
+            GameObject sceneControllerGameObject = new GameObject("SceneController");
+            instance = sceneControllerGameObject.AddComponent<SceneController>();
             return instance;
         }
     }
 
-    protected static SceneController instance;
-
-    public static SceneController Create()
-    {
-        GameObject sceneControllerGameObject = new GameObject("SceneController");
-        instance = sceneControllerGameObject.AddComponent<SceneController>();
-        return instance;
-    }
+    public SceneTransitionDestination initialSceneTransitionDestination;
 
     void Awake()
     {
@@ -37,17 +33,33 @@ public class SceneController : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
+        if (initialSceneTransitionDestination != null)
+        {
+            SetEnteringGameObjectLocation(initialSceneTransitionDestination);
+            initialSceneTransitionDestination.OnReachDestination.Invoke();
+        }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    protected void SetEnteringGameObjectLocation(SceneTransitionDestination entrance)
+    {
+        if (entrance == null)
+        {
+            Debug.LogWarning("Entering Transform's location has not been set.");
+            return;
+        }
+        Transform entranceLocation = entrance.transform;
+        Transform enteringTransform = entrance.transitioningGameObject.transform;
+        enteringTransform.position = entranceLocation.position;
+        enteringTransform.rotation = entranceLocation.rotation;
     }
 }
