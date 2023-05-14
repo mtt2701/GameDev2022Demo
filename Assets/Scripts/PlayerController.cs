@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController: MonoBehaviour {
 
@@ -47,6 +48,11 @@ public class PlayerController: MonoBehaviour {
         if (vert > 0 && onGround) {
             rb2d.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
         }
+
+        if (transform.position.y<-9) {
+            SceneManager.LoadScene("Start");
+        }
+
         //if (!Interactable.status)
         //    if (dir.magnitude != 0)
         //        lookDir = dir.normalized;

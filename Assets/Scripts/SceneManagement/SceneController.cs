@@ -6,38 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    protected static SceneController instance;
-
-    public static SceneController Instance
-    {
-        get
-        {
-            if (instance != null)
-                return instance;
-            instance = FindObjectOfType<SceneController>();
-            if (instance != null)
-                return instance;
-            GameObject sceneControllerGameObject = new GameObject("SceneController");
-            instance = sceneControllerGameObject.AddComponent<SceneController>();
-            return instance;
-        }
-    }
-
-    public SceneTransitionDestination initialSceneTransitionDestination;
+    public GameObject myPrefab;
+    private string sceneName;
+    private Vector3 playerPosition;
 
     void Awake()
     {
-        if (Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
         DontDestroyOnLoad(gameObject);
-        if (initialSceneTransitionDestination != null)
-        {
-            SetEnteringGameObjectLocation(initialSceneTransitionDestination);
-            initialSceneTransitionDestination.OnReachDestination.Invoke();
-        }
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        playerPosition=new Vector3(-6,2,0);
     }
 
     void Start()
@@ -47,19 +24,33 @@ public class SceneController : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.F)) {
+
+            if(sceneName[0]=='F') {
+                string destinationScene = 'B' + sceneName[1].ToString();
+                playerPosition=GameObject.FindGameObjectWithTag("Player").transform.position;
+                playerPosition.x=-playerPosition.x;
+                Debug.Log(destinationScene);
+                SceneManager.LoadScene(destinationScene);
+            }
+            else if (sceneName[0]=='B') {
+                string destinationScene = 'F' + sceneName[1].ToString();
+                playerPosition=GameObject.FindGameObjectWithTag("Player").transform.position;
+                playerPosition.x=-playerPosition.x;
+                Debug.Log(destinationScene);
+                SceneManager.LoadScene(destinationScene);
+            }
+
+        }
     }
 
-    protected void SetEnteringGameObjectLocation(SceneTransitionDestination entrance)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (entrance == null)
-        {
-            Debug.LogWarning("Entering Transform's location has not been set.");
-            return;
-        }
-        Transform entranceLocation = entrance.transform;
-        Transform enteringTransform = entrance.transitioningGameObject.transform;
-        enteringTransform.position = entranceLocation.position;
-        enteringTransform.rotation = entranceLocation.rotation;
+        Debug.Log("OnSceneLoaded: " + scene.name);
+        sceneName=scene.name;
+        if(sceneName!="Start") {
+            Instantiate(myPrefab, playerPosition, Quaternion.identity);
+        } 
     }
+
 }
